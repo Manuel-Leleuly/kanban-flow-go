@@ -8,7 +8,7 @@ import (
 )
 
 type Ticket struct {
-	Id          uuid.UUID      `gorm:"column:id;primary_key;not null;type:uuid;<-create" json:"id"`
+	ID          uuid.UUID      `gorm:"column:id;primary_key;not null;type:uuid;<-create" json:"id"`
 	Title       string         `gorm:"column:title;not null;" json:"title"`
 	Description string         `gorm:"column:description;" json:"decription"`
 	Assignees   StringArray    `gorm:"column:assignees;type:jsonb" json:"assignees"`
@@ -18,12 +18,24 @@ type Ticket struct {
 	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 
 	// belongs to
-	UserID uuid.UUID
-	User   User
+	UserID uuid.UUID `json:"user_id"`
+	User   User      `json:"user"`
 }
 
 func (t *Ticket) TableName() string {
 	return "tickets"
+}
+
+func (t *Ticket) ToTicketResponse() TicketResponse {
+	return TicketResponse{
+		ID:          t.ID,
+		Title:       t.Title,
+		Description: t.Description,
+		Assignees:   t.Assignees,
+		Status:      t.Status,
+		CreatedAt:   t.CreatedAt,
+		UpdatedAt:   t.UpdatedAt,
+	}
 }
 
 // request body
@@ -39,4 +51,15 @@ type TicketUpdateRequest struct {
 	Description string      `json:"description"`
 	Assignees   StringArray `json:"assignees"`
 	Status      string      `json:"status"`
+}
+
+// response
+type TicketResponse struct {
+	ID          uuid.UUID   `json:"id"`
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Assignees   StringArray `json:"assignees"`
+	Status      string      `json:"status"`
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
 }
