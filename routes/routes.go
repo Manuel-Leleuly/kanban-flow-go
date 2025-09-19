@@ -7,7 +7,7 @@ import (
 	"github.com/Manuel-Leleuly/kanban-flow-go/middlewares"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/Manuel-Leleuly/kanban-flow-go/routes/iam"
-	"github.com/Manuel-Leleuly/kanban-flow-go/routes/ticket"
+	"github.com/Manuel-Leleuly/kanban-flow-go/routes/kanban"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,7 +28,7 @@ func GetRoutes(d *models.DBInstance) *gin.Engine {
 	})
 
 	iam.IAMRoutes(router, d)
-	ticket.TicketRoutes(router, d)
+	kanban.KanbanRoutes(router, d)
 
 	return router
 }

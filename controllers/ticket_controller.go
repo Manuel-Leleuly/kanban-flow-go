@@ -40,7 +40,7 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, newTicket.ToTicketResponse())
+	c.JSON(http.StatusCreated, newTicket.ToTicketResponse())
 }
 
 func GetTicketList(d *models.DBInstance, c *gin.Context) {
@@ -92,7 +92,7 @@ func GetTicketById(d *models.DBInstance, c *gin.Context) {
 	}
 
 	var ticket models.Ticket
-	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
+	result := d.DB.Where("user_id = ? AND Tickets.id = ?", user.ID, ticketId).First(&ticket)
 	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
@@ -124,7 +124,7 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 
 	var ticket models.Ticket
 
-	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
+	result := d.DB.Where("user_id = ? AND Tickets.id = ?", user.ID, ticketId).First(&ticket)
 	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
@@ -160,7 +160,7 @@ func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 
 	var ticket models.Ticket
 
-	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
+	result := d.DB.Where("user_id = ? AND Tickets.id = ?", user.ID, ticketId).First(&ticket)
 	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
@@ -169,14 +169,14 @@ func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 	}
 
 	// soft delete ticket
-	if err := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).Delete(&ticket).Error; err != nil {
+	if err := d.DB.Where("user_id = ? AND Tickets.id = ?", user.ID, ticketId).Delete(&ticket).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
 			Message: "failed to delete ticket",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "success",
+	c.JSON(http.StatusOK, models.TicketDeleteResponse{
+		Message: "success",
 	})
 }

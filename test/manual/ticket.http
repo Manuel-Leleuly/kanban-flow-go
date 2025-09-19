@@ -1,5 +1,5 @@
 ### Create ticket
-POST http://localhost:3005/tickets/v1 HTTP/1.1
+POST http://localhost:3005/kanban/v1/tickets HTTP/1.1
 Content-Type: application/json
 Authorization: Bearer <bearer token>
 
@@ -11,7 +11,20 @@ Authorization: Bearer <bearer token>
 }
 
 ### Get all tickets
-GET http://localhost:3005/tickets/v1
+GET http://localhost:3005/kanban/v1/tickets
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer <bearer token>
+
+
+### Update ticket
+PUT http://localhost:3005/kanban/v1/tickets/cbd5f87dd33c41d39e9df5a6d6853cb4
+Content-Type: application/json
+Authorization: Bearer <bearer token>
+
+{
+    "title": "Updated ticket by jane doe",
+    "description": "this is the ticket created by jane doe",
+    "assignees": ["frontend", "backend", "ui"],
+    "status": "todo"
+}

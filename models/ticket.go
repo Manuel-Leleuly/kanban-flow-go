@@ -70,3 +70,7 @@ type TicketResponse struct {
 	CreatedAt   time.Time   `json:"created_at"`
 	UpdatedAt   time.Time   `json:"updated_at"`
 }
+
+type TicketDeleteResponse struct {
+	Message string `json:"message"`
+}
