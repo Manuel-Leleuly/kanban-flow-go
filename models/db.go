@@ -64,7 +64,7 @@ func (d *DBInstance) SyncDatabase() error {
 		return errors.New("DB is not initialized")
 	}
 
-	// TODO: add auto migration
+	d.DB.AutoMigrate(&User{}, &Ticket{})
 
 	return nil
 }

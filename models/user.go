@@ -3,12 +3,12 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        uuid.UUID      `gorm:"primary_key;column:id;not null;<-create" json:"id"`
+	ID        string         `gorm:"primary_key;column:id;not null;<-create" json:"id"`
 	FirstName string         `gorm:"column:first_name;not null" json:"first_name"`
 	LastName  string         `gorm:"column:last_name;not null" json:"last_name"`
 	Email     string         `gorm:"column:email;not null" json:"email"`
@@ -22,9 +22,16 @@ func (u *User) TableName() string {
 	return "users"
 }
 
+func (u *User) BeforeCreate(db *gorm.DB) error {
+	if u.ID == "" {
+		u.ID = helpers.GenerateUUIDWithoutHyphen()
+	}
+	return nil
+}
+
 func (u *User) ToUserResponse() UserResponse {
 	return UserResponse{
-		ID:        u.ID.String(),
+		ID:        u.ID,
 		FirstName: u.FirstName,
 		LastName:  u.LastName,
 		Email:     u.Email,
@@ -52,7 +59,6 @@ type UserResponse struct {
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
 	Email     string    `json:"email"`
-	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

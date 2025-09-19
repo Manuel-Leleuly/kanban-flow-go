@@ -8,7 +8,7 @@ import (
 )
 
 func GetUserFromContext(c *gin.Context) (*models.User, error) {
-	contextUser, exist := c.Get("user")
+	contextUser, exist := c.Get("me")
 	if !exist {
 		return &models.User{}, errors.New("user doesn't exist in context")
 	}

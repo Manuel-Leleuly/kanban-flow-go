@@ -20,7 +20,7 @@ func Login(d *models.DBInstance, c *gin.Context) {
 
 	var user models.User
 	result := d.DB.Where("email = ?", reqBody.Email).First(&user)
-	if result.Error != nil || user.ID.String() == "" {
+	if result.Error != nil || user.ID == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
 			Message: "invalid email and/or password",
 		})

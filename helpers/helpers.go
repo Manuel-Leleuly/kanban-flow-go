@@ -1,6 +1,11 @@
 package helpers
 
-import "github.com/gin-gonic/gin"
+import (
+	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+)
 
 func GetBaseUrl(c *gin.Context) string {
 	scheme := "http"
@@ -9,4 +14,8 @@ func GetBaseUrl(c *gin.Context) string {
 	}
 
 	return scheme + "://" + c.Request.Host
+}
+
+func GenerateUUIDWithoutHyphen() string {
+	return strings.ReplaceAll(uuid.NewString(), "-", "")
 }

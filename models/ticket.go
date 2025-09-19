@@ -3,12 +3,12 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
 	"gorm.io/gorm"
 )
 
 type Ticket struct {
-	ID          uuid.UUID      `gorm:"column:id;primary_key;not null;type:uuid;<-create" json:"id"`
+	ID          string         `gorm:"column:id;primary_key;not null;<-create" json:"id"`
 	Title       string         `gorm:"column:title;not null;" json:"title"`
 	Description string         `gorm:"column:description;" json:"decription"`
 	Assignees   StringArray    `gorm:"column:assignees;type:jsonb" json:"assignees"`
@@ -18,12 +18,19 @@ type Ticket struct {
 	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 
 	// belongs to
-	UserID uuid.UUID `json:"user_id"`
-	User   User      `json:"user"`
+	UserID string `json:"user_id"`
+	User   User   `json:"user"`
 }
 
 func (t *Ticket) TableName() string {
 	return "tickets"
+}
+
+func (t *Ticket) BeforeCreate(db *gorm.DB) error {
+	if t.ID == "" {
+		t.ID = helpers.GenerateUUIDWithoutHyphen()
+	}
+	return nil
 }
 
 func (t *Ticket) ToTicketResponse() TicketResponse {
@@ -55,7 +62,7 @@ type TicketUpdateRequest struct {
 
 // response
 type TicketResponse struct {
-	ID          uuid.UUID   `json:"id"`
+	ID          string      `json:"id"`
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
 	Assignees   StringArray `json:"assignees"`

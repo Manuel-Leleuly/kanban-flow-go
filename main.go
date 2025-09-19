@@ -15,7 +15,7 @@ func init() {
 
 func main() {
 	// check if client secret is set
-	if os.Getenv("CLIEN_SECRET") == "" {
+	if os.Getenv("CLIENT_SECRET") == "" {
 		logrus.Fatal("[Error] client secret is not set")
 	}
 

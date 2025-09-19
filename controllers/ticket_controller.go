@@ -65,6 +65,13 @@ func GetTicketList(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
+	if len(tickets) == 0 {
+		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
+			Message: "no tickets found",
+		})
+		return
+	}
+
 	var result []models.TicketResponse
 	for _, ticket := range tickets {
 		result = append(result, ticket.ToTicketResponse())
@@ -86,7 +93,7 @@ func GetTicketById(d *models.DBInstance, c *gin.Context) {
 
 	var ticket models.Ticket
 	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
-	if result.Error != nil || ticket.ID.String() == "" {
+	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
 		})
@@ -118,7 +125,7 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 	var ticket models.Ticket
 
 	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
-	if result.Error != nil || ticket.ID.String() == "" {
+	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
 		})
@@ -154,7 +161,7 @@ func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 	var ticket models.Ticket
 
 	result := d.DB.Where("user_id = ? AND id = ?", user.ID, ticketId).First(&ticket)
-	if result.Error != nil || ticket.ID.String() == "" {
+	if result.Error != nil || ticket.ID == "" {
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "ticket not found",
 		})

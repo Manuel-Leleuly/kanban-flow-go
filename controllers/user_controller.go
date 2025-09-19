@@ -21,7 +21,7 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 
 	var user models.User
 	d.DB.Where("email = ?", reqBody.Email).First(&user)
-	if user.ID.String() == "" {
+	if user.ID != "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
 			Message: "email is already used",
 		})
@@ -46,6 +46,7 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
 			Message: "failed to create user",
 		})
+		return
 	}
 
 	c.JSON(http.StatusCreated, newUser.ToUserResponse())

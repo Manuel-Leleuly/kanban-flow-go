@@ -1,0 +1,28 @@
+### Create user
+POST http://localhost:3005/iam/v1/users
+Content-Type: application/json
+
+{
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "email": "janedoe@example.com",
+    "password": "janedoe123"
+}
+
+### Login
+POST http://localhost:3005/iam/v1/login
+Content-Type: application/json
+
+{
+    "email": "janedoe@example.com",
+    "password": "janedoe123"
+}
+
+### Get Testing
+GET http://localhost:3005/iam/v1/testing
+Content-Type: application/json
+Accept: application/json
+
+### POST testing
+POST http://localhost:3005/iam/v1/testing
+Content-Type: application/json

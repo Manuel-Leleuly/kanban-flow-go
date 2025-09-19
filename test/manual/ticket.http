@@ -1,0 +1,17 @@
+### Create ticket
+POST http://localhost:3005/tickets/v1 HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer <bearer token>
+
+{
+    "title": "Ticket created by jane doe",
+    "description": "this is the ticket created by jane doe",
+    "assignees": ["frontend", "backend", "ui"],
+    "status": "todo"
+}
+
+### Get all tickets
+GET http://localhost:3005/tickets/v1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer <bearer token>

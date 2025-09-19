@@ -21,27 +21,27 @@ func CreateAccessToken(user models.User) (string, error) {
 	return accessToken.SignedString([]byte(os.Getenv("CLIENT_SECRET")))
 }
 
-func ValidateAccessToken(d *models.DBInstance, accessToken string) error {
+func ValidateAccessToken(d *models.DBInstance, accessToken string) (*models.User, error) {
 	token, err := GetToken(accessToken)
 	if err != nil {
-		return err
+		return &models.User{}, err
 	}
 
+	var user models.User
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			return errors.New("token is expired")
+			return &models.User{}, errors.New("token is expired")
 		}
 
-		var user models.User
 		result := d.DB.Where("id = ? AND email = ?", claims["id"], claims["email"]).First(&user)
-		if result.Error != nil || user.ID.String() == "" {
-			return errors.New("unauthorized access")
+		if result.Error != nil || user.ID == "" {
+			return &models.User{}, errors.New("unauthorized access")
 		}
 	} else {
-		return errors.New("unauthorized access")
+		return &models.User{}, errors.New("unauthorized access")
 	}
 
-	return nil
+	return &user, nil
 }
 
 // helpers
