@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,12 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
-	// TODO: add validation
+	if err := reqBody.Validate(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.ValidationErrorMessage{
+			Message: strings.Split(err.Error(), "; "),
+		})
+		return
+	}
 
 	var user models.User
 	d.DB.Where("email = ?", reqBody.Email).First(&user)

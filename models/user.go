@@ -1,9 +1,12 @@
 package models
 
 import (
+	"regexp"
 	"time"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/go-ozzo/ozzo-validation/v4/is"
 	"gorm.io/gorm"
 )
 
@@ -48,9 +51,101 @@ type UserCreateRequest struct {
 	Password  string `json:"password"`
 }
 
+func (ucr UserCreateRequest) Validate() error {
+	return validation.ValidateStruct(
+		&ucr,
+		/*
+			FirstName validations:
+			- required
+			- min length 2
+			- max length 50
+			- only contains alphabet
+		*/
+		validation.Field(
+			&ucr.FirstName,
+			validation.Required.Error("is required"),
+			validation.Length(2, 50).Error("must have length between 2 and 50"),
+			is.Alpha.Error("must only contain alphabet"),
+		),
+
+		/*
+			LastName validations:
+			- min length 2
+			- max length 50
+			- only contains alphabet
+		*/
+		validation.Field(
+			&ucr.LastName,
+			validation.Length(2, 50).Error("must have length between 2 and 50"),
+			is.Alpha.Error("must only contain alphabet"),
+		),
+
+		/*
+			Email validations:
+			- required
+			- must be in email format
+		*/
+		validation.Field(
+			&ucr.Email,
+			validation.Required.Error("is required"),
+			is.Email.Error("must be in email format"),
+		),
+
+		/*
+			Password validations:
+			- required
+			- min length 8
+			- max length 50
+			- must contain at least 1 uppercase letter
+			- must contain at least 1 lowercase letter
+			- must contain at least 1 number
+			- must contain at least 1 special character
+		*/
+		validation.Field(&ucr.Password,
+			validation.Required.Error("is required"),
+			validation.Length(8, 50).Error("must have length between 8 and 50"),
+			validation.Match(regexp.MustCompile("[A-Z]+")).Error("must have at least 1 uppercase letter"),
+			validation.Match(regexp.MustCompile("[a-z]+")).Error("must have at least 1 lowercase letter"),
+			validation.Match(regexp.MustCompile("[0-9]+")).Error("must have at least 1 number"),
+			validation.Match(regexp.MustCompile("\\W+")).Error("must have at least 1 non-alphanumeric character"),
+		),
+	)
+}
+
 type UserUpdateRequest struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
+}
+
+func (udr UserUpdateRequest) Validate() error {
+	return validation.ValidateStruct(
+		&udr,
+		/*
+			FirstName validations:
+			- required
+			- min length 2
+			- max length 50
+			- only contains alphabet
+		*/
+		validation.Field(
+			&udr.FirstName,
+			validation.Required,
+			validation.Length(2, 50),
+			is.Alpha,
+		),
+
+		/*
+			LastName validations:
+			- min length 2
+			- max length 50
+			- only contains alphabet
+		*/
+		validation.Field(
+			&udr.LastName,
+			validation.Length(2, 50),
+			is.Alpha,
+		),
+	)
 }
 
 // response

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
+	validation "github.com/go-ozzo/ozzo-validation"
 	"gorm.io/gorm"
 )
 
@@ -53,11 +54,109 @@ type TicketCreateRequest struct {
 	Status      string      `json:"status"`
 }
 
+func (tcr TicketCreateRequest) Validate() error {
+	return validation.ValidateStruct(
+		&tcr,
+		/*
+			Title validations:
+			- is required
+			- min length 8
+			- max length 50
+		*/
+		validation.Field(
+			&tcr.Title,
+			validation.Required.Error("is required"),
+			validation.Length(8, 50).Error("must have length between 8 and 50"),
+		),
+
+		/*
+			Description validations:
+			- min length 1
+			- max length 200
+		*/
+		validation.Field(
+			&tcr.Description,
+			validation.Length(1, 200).Error("must have length between 1 and 200"),
+		),
+
+		/*
+			Assignees validations:
+			- only allows frontend, backend, and ui
+			- must not contain duplicates
+		*/
+		validation.Field(
+			&tcr.Assignees,
+			validation.Each(
+				validation.In("frontend", "backend", "ui").Error("only allows \"frontend\", \"backend\", or \"ui\""),
+			),
+			tcr.Assignees.ValidateUniqueItems(),
+		),
+
+		/*
+			Status validations:
+			- only allows todo, doing, done
+		*/
+		validation.Field(
+			&tcr.Status,
+			validation.In("todo", "doing", "done").Error("only allows \"todo\", \"doing\", or \"done\""),
+		),
+	)
+}
+
 type TicketUpdateRequest struct {
 	Title       string      `json:"title"`
 	Description string      `json:"description"`
 	Assignees   StringArray `json:"assignees"`
 	Status      string      `json:"status"`
+}
+
+func (tur TicketUpdateRequest) Validate() error {
+	return validation.ValidateStruct(
+		&tur,
+		/*
+			Title validations:
+			- is required
+			- min length 8
+			- max length 50
+		*/
+		validation.Field(
+			&tur.Title,
+			validation.Required.Error("is required"),
+			validation.Length(8, 50).Error("must have length between 8 and 50"),
+		),
+
+		/*
+			Description validations:
+			- min length 1
+			- max length 200
+		*/
+		validation.Field(
+			&tur.Description,
+			validation.Length(1, 200).Error("must have length between 1 and 200"),
+		),
+
+		/*
+			Assignees validations:
+			- only allows frontend, backend, and ui
+			- must not contain duplicates
+		*/
+		validation.Field(
+			&tur.Assignees,
+			validation.Each(
+				validation.In("frontend", "backend", "ui").Error("only allows \"frontend\", \"backend\", or \"ui\""),
+			),
+			tur.Assignees.ValidateUniqueItems(),
+		),
+
+		/*
+			Status validations:
+			- only allows todo, doing, done
+		*/
+		validation.Field(
+			&tur.Status,
+			validation.In("todo", "doing", "done").Error("only allows \"todo\", \"doing\", or \"done\""),
+		),
+	)
 }
 
 // response

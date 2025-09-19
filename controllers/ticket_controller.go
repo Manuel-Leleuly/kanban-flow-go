@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/context"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
@@ -13,6 +14,13 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 	if err := c.Bind(&reqBody); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
 			Message: "invalid request body",
+		})
+		return
+	}
+
+	if err := reqBody.Validate(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.ValidationErrorMessage{
+			Message: strings.Split(err.Error(), "; "),
 		})
 		return
 	}
@@ -118,6 +126,13 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 	if err := c.Bind(&reqBody); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
 			Message: "invalid request body",
+		})
+		return
+	}
+
+	if err := reqBody.Validate(); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.ValidationErrorMessage{
+			Message: strings.Split(err.Error(), "; "),
 		})
 		return
 	}

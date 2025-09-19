@@ -53,6 +53,44 @@ func TestCreateTicketSuccess(t *testing.T) {
 	assert.Equal(t, reqBody.Assignees[0], responseBody.Assignees[0])
 }
 
+func TestCreateTicketFailed(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	token, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	reqBody := models.TicketCreateRequest{
+		Title:       "a",
+		Description: "",
+		Assignees:   []string{"frontend", "frontend"},
+		Status:      "sleeping",
+	}
+
+	ticketJson, err := json.Marshal(reqBody)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodPost, "/kanban/v1/tickets", strings.NewReader(string(ticketJson)), token.AccessToken)
+
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.ValidationErrorMessage
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	// validation key is ordered alphabetically
+	// last validation ends with a dot
+	assert.Equal(t, "assignees: contains duplicate value frontend", responseBody.Message[0])
+	assert.Equal(t, "status: only allows \"todo\", \"doing\", or \"done\"", responseBody.Message[1])
+	assert.Equal(t, "title: must have length between 8 and 50.", responseBody.Message[2])
+}
+
 func TestUpdateTicketSuccess(t *testing.T) {
 	router := routes.GetRoutes(D)
 
@@ -194,6 +232,45 @@ func TestUpdateTicketSuccess(t *testing.T) {
 	assert.Equal(t, statusReqBody.Assignees[1], statusResponseBody.Assignees[1])
 }
 
+func TestUpdateTicketFailed(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	tokenData, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	// failed because of validation
+	reqBody := models.TicketUpdateRequest{
+		Title:       "a",
+		Description: "",
+		Assignees:   []string{"frontend", "frontend"},
+		Status:      "sleeping",
+	}
+
+	ticketJson, err := json.Marshal(reqBody)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodPut, "/kanban/v1/tickets/"+testhelper.TEST_TICKET.ID, strings.NewReader(string(ticketJson)), tokenData.AccessToken)
+
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.ValidationErrorMessage
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	// validation key is ordered alphabetically
+	// last validation ends with a dot
+	assert.Equal(t, "assignees: contains duplicate value frontend", responseBody.Message[0])
+	assert.Equal(t, "status: only allows \"todo\", \"doing\", or \"done\"", responseBody.Message[1])
+	assert.Equal(t, "title: must have length between 8 and 50.", responseBody.Message[2])
+}
+
 func TestDeleteTicketSuccess(t *testing.T) {
 	router := routes.GetRoutes(D)
 
@@ -234,4 +311,28 @@ func TestDeleteTicketSuccess(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, "ticket not found", ticketResponseBody.Message)
+}
+
+func TestDeleteTicketFailed(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	tokenData, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodDelete, "/kanban/v1/tickets/wrongticketid", nil, tokenData.AccessToken)
+
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusNotFound, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.ErrorMessage
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	assert.Equal(t, "ticket not found", responseBody.Message)
 }

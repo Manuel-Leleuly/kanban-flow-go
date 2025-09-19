@@ -1,7 +1,7 @@
 ### Create ticket
 POST http://localhost:3005/kanban/v1/tickets HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer <bearer token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbmVkb2VAZXhhbXBsZS5jb20iLCJleHAiOjE3NTgyOTQzODksImlkIjoiNzYxYjViMDM5OWU2NGE1ZTg3MzY0MTYwODQ2YTk0ZDgifQ.QHjGnjocFthp9ZOHK-oUAix6L2HJ_SENGw1DMGPg-j4
 
 {
     "title": "Ticket created by jane doe",
@@ -14,17 +14,17 @@ Authorization: Bearer <bearer token>
 GET http://localhost:3005/kanban/v1/tickets
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer <bearer token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbmVkb2VAZXhhbXBsZS5jb20iLCJleHAiOjE3NTgyOTQzODksImlkIjoiNzYxYjViMDM5OWU2NGE1ZTg3MzY0MTYwODQ2YTk0ZDgifQ.QHjGnjocFthp9ZOHK-oUAix6L2HJ_SENGw1DMGPg-j4
 
 
 ### Update ticket
 PUT http://localhost:3005/kanban/v1/tickets/cbd5f87dd33c41d39e9df5a6d6853cb4
 Content-Type: application/json
-Authorization: Bearer <bearer token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbmVkb2VAZXhhbXBsZS5jb20iLCJleHAiOjE3NTgyOTQzODksImlkIjoiNzYxYjViMDM5OWU2NGE1ZTg3MzY0MTYwODQ2YTk0ZDgifQ.QHjGnjocFthp9ZOHK-oUAix6L2HJ_SENGw1DMGPg-j4
 
 {
     "title": "Updated ticket by jane doe",
     "description": "this is the ticket created by jane doe",
-    "assignees": ["frontend", "backend", "ui"],
+    "assignees": ["frontend", "frontend", "ui"],
     "status": "todo"
 }

@@ -4,6 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type StringArray []string
@@ -28,4 +30,17 @@ func (sa *StringArray) Scan(src any) error {
 	}
 
 	return json.Unmarshal(bytes, sa)
+}
+
+func (sa StringArray) ValidateUniqueItems() validation.Rule {
+	return validation.By(func(value interface{}) error {
+		seen := make(map[string]bool, len(sa))
+		for _, v := range sa {
+			if _, exists := seen[v]; exists {
+				return errors.New("contains duplicate value " + v)
+			}
+			seen[v] = true
+		}
+		return nil
+	})
 }
