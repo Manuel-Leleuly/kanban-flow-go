@@ -17,12 +17,3 @@ Content-Type: application/json
     "email": "janedoe@example.com",
     "password": "janedoe123"
 }
-
-### Get Testing
-GET http://localhost:3005/iam/v1/testing
-Content-Type: application/json
-Accept: application/json
-
-### POST testing
-POST http://localhost:3005/iam/v1/testing
-Content-Type: application/json

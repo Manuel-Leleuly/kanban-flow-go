@@ -62,6 +62,13 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, newTicket.ToTicketResponse())
+
+	websocketMessage := models.WSMessage{
+		Event:  "created",
+		Ticket: newTicket.ToTicketResponse(),
+	}
+	msg, err := websocketMessage.ToJsonMarshal()
+	BroadcastMessage(msg)
 }
 
 // GetTicketList 	godoc
@@ -213,6 +220,13 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, ticket.ToTicketResponse())
+
+	websocketMessage := models.WSMessage{
+		Event:  "updated",
+		Ticket: ticket.ToTicketResponse(),
+	}
+	msg, err := websocketMessage.ToJsonMarshal()
+	BroadcastMessage(msg)
 }
 
 // DeleteTicket 	godoc
@@ -260,4 +274,11 @@ func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 	c.JSON(http.StatusOK, models.TicketDeleteResponse{
 		Message: "success",
 	})
+
+	websocketMessage := models.WSMessage{
+		Event:  "deleted",
+		Ticket: models.TicketResponse{},
+	}
+	msg, err := websocketMessage.ToJsonMarshal()
+	BroadcastMessage(msg)
 }

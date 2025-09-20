@@ -1,7 +1,14 @@
 package main
 
 import (
+	"context"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	_ "net/http/pprof"
 
 	_ "github.com/Manuel-Leleuly/kanban-flow-go/docs"
 	dbhelper "github.com/Manuel-Leleuly/kanban-flow-go/helpers/db"
@@ -35,6 +42,11 @@ func main() {
 		logrus.Fatal("[Error] client secret is not set")
 	}
 
+	// start pprof
+	go func() {
+		http.ListenAndServe("localhost:6060", nil)
+	}()
+
 	db := dbhelper.NewDBClient()
 
 	if err := db.ConnectToDB(os.Getenv("DB_NAME")); err != nil {
@@ -45,8 +57,26 @@ func main() {
 		logrus.Fatal("[Error] failed to sync database due to: " + err.Error())
 	}
 
-	server := routes.GetRoutes(db)
-	if err := server.Run(":3005"); err != nil {
-		logrus.Fatal("[Error] failed to start Gin server due to: " + err.Error())
+	server := &http.Server{
+		Addr:    ":3005",
+		Handler: routes.GetRoutes(db),
+	}
+
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logrus.Fatal("[Error] failed to start Gin server due to: " + err.Error())
+		}
+	}()
+
+	// Graceful shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	logrus.Println("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		logrus.Fatal("[Info] Server forced to shutdown: " + err.Error())
 	}
 }

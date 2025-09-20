@@ -3,6 +3,7 @@ package routes
 import (
 	"net/http"
 
+	"github.com/Manuel-Leleuly/kanban-flow-go/controllers"
 	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
 	"github.com/Manuel-Leleuly/kanban-flow-go/middlewares"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
@@ -19,14 +20,26 @@ func GetRoutes(d *models.DBInstance) *gin.Engine {
 	// use custom logger but keep the default recovery
 	router.Use(middlewares.LoggerMiddleware, gin.Recovery())
 
+	// implement rate limit and security
+	router.Use(middlewares.RateLimitMiddleware, middlewares.SecurityHeadersMiddleware)
+
 	// implement swagger
 	router.GET("/apidocs/*any", func(c *gin.Context) {
 		if c.Request.RequestURI == "/apidocs/" {
 			c.Redirect(http.StatusFound, "/apidocs/index.html")
 		}
 		ginSwagger.WrapHandler(swaggerfiles.Handler, ginSwagger.URL(helpers.GetBaseUrl(c)+"/apidocs/doc.json"))(c)
-		// ginSwagger.WrapHandler(swaggerfiles.Handler)
 	})
+
+	// health check
+	router.GET("/healthz", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
+	})
+
+	// implement websocket
+	router.GET("/ws", controllers.WebSocketHandler)
 
 	iam.IAMRoutes(router, d)
 	kanban.KanbanRoutes(router, d)
