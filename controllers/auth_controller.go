@@ -9,6 +9,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Login godoc
+//
+//	@Summary		login
+//	@Description	login
+//	@Tags			Auth
+//	@Router			/iam/v1/login [post]
+//	@Accept			json
+//	@Produce		json
+//	@Param			requestBody	body		models.Login{}	true	"Request Body"
+//	@Success		200			{object}	models.Token{}
+//	@Failure		400			{object}	models.ErrorMessage{}
+//	@Failure		500			{object}	models.ErrorMessage{}
 func Login(d *models.DBInstance, c *gin.Context) {
 	var reqBody models.Login
 	if err := c.Bind(&reqBody); err != nil {

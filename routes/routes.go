@@ -25,6 +25,7 @@ func GetRoutes(d *models.DBInstance) *gin.Engine {
 			c.Redirect(http.StatusFound, "/apidocs/index.html")
 		}
 		ginSwagger.WrapHandler(swaggerfiles.Handler, ginSwagger.URL(helpers.GetBaseUrl(c)+"/apidocs/doc.json"))(c)
+		// ginSwagger.WrapHandler(swaggerfiles.Handler)
 	})
 
 	iam.IAMRoutes(router, d)

@@ -9,6 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// CreateTicket 	godoc
+//
+//	@Summary		Create ticket
+//	@Description	Create a ticket
+//	@Security		ApiKeyAuth
+//	@Tags			Ticket
+//	@Router			/kanban/v1/tickets [post]
+//	@Accept			json
+//	@Produce		json
+//	@Param			requestBody	body		models.TicketCreateRequest{}	true	"Request Body"
+//	@Success		201			{object}	models.TicketResponse{}
+//	@Failure		400			{object}	models.ErrorMessage{}
+//	@Failure		500			{object}	models.ErrorMessage{}
 func CreateTicket(d *models.DBInstance, c *gin.Context) {
 	var reqBody models.TicketCreateRequest
 	if err := c.Bind(&reqBody); err != nil {
@@ -51,6 +64,19 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 	c.JSON(http.StatusCreated, newTicket.ToTicketResponse())
 }
 
+// GetTicketList 	godoc
+//
+//	@Summary		Get a list of tickets
+//	@Description	Get a list of tickets created by the user stored in the token
+//	@Security		ApiKeyAuth
+//	@Tags			Ticket
+//	@Router			/kanban/v1/tickets [get]
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	[]models.TicketResponse{}
+//	@Failure		400	{object}	models.ErrorMessage{}
+//	@Failure		401	{object}	models.ErrorMessage{}
+//	@Failure		404	{object}	models.ErrorMessage{}
 func GetTicketList(d *models.DBInstance, c *gin.Context) {
 	/*
 		only returns tickets that belong to the user registered
@@ -88,6 +114,19 @@ func GetTicketList(d *models.DBInstance, c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+// GetTicketById 	godoc
+//
+//	@Summary		Get ticket by the ticket ID
+//	@Description	Get ticket by the ticket ID
+//	@Security		ApiKeyAuth
+//	@Tags			Ticket
+//	@Router			/kanban/v1/tickets/{ticketId} [get]
+//	@Accept			json
+//	@Produce		json
+//	@Param			ticketId	path		string	true	"Ticket ID"
+//	@Success		200			{object}	models.TicketResponse{}
+//	@Failure		401			{object}	models.ErrorMessage{}
+//	@Failure		404			{object}	models.ErrorMessage{}
 func GetTicketById(d *models.DBInstance, c *gin.Context) {
 	ticketId := c.Param("ticketId")
 
@@ -111,6 +150,20 @@ func GetTicketById(d *models.DBInstance, c *gin.Context) {
 	c.JSON(http.StatusOK, ticket.ToTicketResponse())
 }
 
+// UpdateTicket 	godoc
+//
+//	@Summary		Update a ticket
+//	@Description	Update a ticket
+//	@Security		ApiKeyAuth
+//	@Tags			Ticket
+//	@Router			/kanban/v1/tickets/{ticketId} [put]
+//	@Accept			json
+//	@Produce		json
+//	@Param			ticketId	path		string							true	"Ticket ID"
+//	@Param			requestBody	body		models.TicketUpdateRequest{}	true	"Request Body"
+//	@Success		200			{object}	models.TicketResponse{}
+//	@Failure		401			{object}	models.ErrorMessage{}
+//	@Failure		404			{object}	models.ErrorMessage{}
 func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 	ticketId := c.Param("ticketId")
 
@@ -162,6 +215,19 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 	c.JSON(http.StatusOK, ticket.ToTicketResponse())
 }
 
+// DeleteTicket 	godoc
+//
+//	@Summary		Delete ticket
+//	@Description	Delete a ticket
+//	@Security		ApiKeyAuth
+//	@Tags			Ticket
+//	@Router			/kanban/v1/tickets/{ticketId} [delete]
+//	@Accept			json
+//	@Produce		json
+//	@Param			ticketId	path		string	true	"Ticket ID"
+//	@Success		200			{object}	models.TicketResponse{}
+//	@Failure		401			{object}	models.ErrorMessage{}
+//	@Failure		404			{object}	models.ErrorMessage{}
 func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 	ticketId := c.Param("ticketId")
 

@@ -9,6 +9,18 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// CreateUser 		godoc
+//
+//	@Summary		Create user
+//	@Description	Create a user
+//	@Tags			User
+//	@Router			/iam/v1/users [post]
+//	@Accept			json
+//	@Produce		json
+//	@Param			requestBody	body		models.UserCreateRequest{}	true	"Request Body"
+//	@Success		201			{object}	models.UserResponse{}
+//	@Failure		400			{object}	models.ErrorMessage{}
+//	@Failure		500			{object}	models.ErrorMessage{}
 func CreateUser(d *models.DBInstance, c *gin.Context) {
 	var reqBody models.UserCreateRequest
 	if err := c.Bind(&reqBody); err != nil {

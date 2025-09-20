@@ -71,8 +71,8 @@ func (d *DBInstance) SyncDatabase() error {
 
 func (d *DBInstance) CheckDBConnection(c *gin.Context) {
 	if !d.IsDBConnected() {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-			"Message": "DB is not initialized",
+		c.AbortWithStatusJSON(http.StatusInternalServerError, ErrorMessage{
+			Message: "DB is not initialized",
 		})
 	} else {
 		c.Next()
