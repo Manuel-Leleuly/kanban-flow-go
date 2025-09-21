@@ -12,6 +12,15 @@ func IAMV1Routes(router *gin.RouterGroup, d *models.DBInstance) {
 	{
 		v1.POST("/login", d.MakeHTTPHandleFunc(controllers.Login))
 		v1.POST("/users", d.MakeHTTPHandleFunc(controllers.CreateUser))
-		v1.POST("/token/refresh", d.MakeHTTPHandleFunc(middlewares.CheckRefreshToken), controllers.RefreshToken)
+	}
+
+	withAccessToken := v1.Group("/", d.MakeHTTPHandleFunc(middlewares.CheckAccessToken))
+	{
+		withAccessToken.GET("/users/me", controllers.GetMe)
+	}
+
+	withRefreshToken := v1.Group("/", d.MakeHTTPHandleFunc(middlewares.CheckRefreshToken))
+	{
+		withRefreshToken.POST("/token/refresh", d.MakeHTTPHandleFunc(middlewares.CheckRefreshToken), controllers.RefreshToken)
 	}
 }

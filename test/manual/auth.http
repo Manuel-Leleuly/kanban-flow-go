@@ -19,7 +19,13 @@ Content-Type: application/json
 }
 
 ### Refresh Token
-GET http://localhost:3005/iam/v1/token/refresh
+POST http://localhost:3005/iam/v1/token/refresh
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer <refresh token>
+
+### Get me
+GET http://localhost:3005/iam/v1/users/me
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer <access token>

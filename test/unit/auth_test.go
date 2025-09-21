@@ -143,3 +143,29 @@ func TestRefreshTokenFailed(t *testing.T) {
 
 	assert.Equal(t, "unauthorized access", responseBody.Message)
 }
+
+func TestGetMeSuccess(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	token, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodGet, "/iam/v1/users/me", nil, token.AccessToken)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusOK, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.UserResponse
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	assert.Equal(t, responseBody.ID, testhelper.TEST_USER.ID)
+	assert.Equal(t, responseBody.FirstName, testhelper.TEST_USER.FirstName)
+	assert.Equal(t, responseBody.LastName, testhelper.TEST_USER.LastName)
+	assert.Equal(t, responseBody.Email, testhelper.TEST_USER.Email)
+}

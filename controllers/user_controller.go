@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Manuel-Leleuly/kanban-flow-go/context"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -68,4 +70,28 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, newUser.ToUserResponse())
+}
+
+// GetMe godoc
+//
+//	@Summary		get logged in user
+//	@Description	get logged in user based on token
+//	@Security		ApiKeyAuth
+//	@Tags			User
+//	@Router			/iam/v1/me [get]
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	models.UserResponse{}
+//	@Failure		404	{object}	models.ErrorMessage{}
+func GetMe(c *gin.Context) {
+	user, err := context.GetUserFromContext(c)
+	if err != nil {
+		logrus.Println("error from get me: ", err.Error())
+		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
+			Message: "failed to get me",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user.ToUserResponse())
 }

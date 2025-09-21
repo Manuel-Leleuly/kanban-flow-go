@@ -137,6 +137,31 @@ paths:
       summary: login
       tags:
       - Auth
+  /iam/v1/token/refresh:
+    post:
+      consumes:
+      - application/json
+      description: get new access and refresh token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Token'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorMessage'
+      security:
+      - ApiKeyAuth: []
+      summary: get new access and refresh token
+      tags:
+      - Auth
   /iam/v1/users:
     post:
       consumes:

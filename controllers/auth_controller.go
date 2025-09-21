@@ -70,6 +70,18 @@ func Login(d *models.DBInstance, c *gin.Context) {
 	})
 }
 
+// RefreshToken godoc
+//
+//	@Summary		get new access and refresh token
+//	@Description	get new access and refresh token
+//	@Security		ApiKeyAuth
+//	@Tags			Auth
+//	@Router			/iam/v1/token/refresh [post]
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	models.Token{}
+//	@Failure		401	{object}	models.ErrorMessage{}
+//	@Failure		500	{object}	models.ErrorMessage{}
 func RefreshToken(c *gin.Context) {
 	user, err := context.GetUserFromContext(c)
 	if err != nil {
