@@ -7,10 +7,32 @@ import (
 	jwthelper "github.com/Manuel-Leleuly/kanban-flow-go/helpers/jwt"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 	bearerToken := c.GetHeader("Authorization")
+
+	// get token from cookie if it's not in header
+	if bearerToken == "" {
+		cookies := c.Request.Cookies()
+		cookieMap := make(map[string]string)
+		for _, cookie := range cookies {
+			logrus.Println(cookie)
+			cookieMap[cookie.Name] = cookie.Value
+		}
+
+		accessToken, ok := cookieMap["access_token"]
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
+				Message: "unauthorized access",
+			})
+			return
+		}
+		bearerToken = "Bearer " + accessToken
+	}
+
+	logrus.Println("access token check: " + bearerToken)
 
 	accessToken, err := jwthelper.GetTokenStringFromHeader(bearerToken)
 	if err != nil {
@@ -39,6 +61,25 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 
 func CheckRefreshToken(d *models.DBInstance, c *gin.Context) {
 	bearerToken := c.GetHeader("Authorization")
+
+	// get token from cookie if it's not in header
+	if bearerToken == "" {
+		cookies := c.Request.Cookies()
+		cookieMap := make(map[string]string)
+		for _, cookie := range cookies {
+			logrus.Println(cookie)
+			cookieMap[cookie.Name] = cookie.Value
+		}
+
+		accessToken, ok := cookieMap["refresh_token"]
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
+				Message: "unauthorized access",
+			})
+			return
+		}
+		bearerToken = "Bearer " + accessToken
+	}
 
 	refreshToken, err := jwthelper.GetTokenStringFromHeader(bearerToken)
 	if err != nil {
