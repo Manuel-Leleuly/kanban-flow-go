@@ -11,46 +11,68 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func CreateAccessToken(user models.User) (string, error) {
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":    user.ID,
-		"email": user.Email,
-		"exp":   time.Now().Add(time.Hour).Unix(),
-	})
+// TODO: improve this
+var accessSecret string = os.Getenv("CLIENT_SECRET") + "_access"
+var refreshSecret string = os.Getenv("CLIENT_SECRET") + "_refresh"
 
-	return accessToken.SignedString([]byte(os.Getenv("CLIENT_SECRET")))
+func CreateToken(user models.User, isRefresh bool) (string, error) {
+	expiredUnix := time.Now().Add(time.Hour).Unix()
+	if isRefresh {
+		expiredUnix = time.Now().Add(24 * time.Hour).Unix()
+	}
+
+	tokenClaims := models.TokenClaims{
+		ID:    user.ID,
+		Email: user.Email,
+		Exp:   expiredUnix,
+		Iat:   time.Now().Unix(),
+		Jti:   fmt.Sprintf("%d-%d", user.ID, time.Now().UnixNano()),
+	}
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims.ToJwtClaims())
+
+	secret := accessSecret
+	if isRefresh {
+		secret = refreshSecret
+	}
+	return accessToken.SignedString([]byte(secret))
 }
 
-func ValidateAccessToken(d *models.DBInstance, accessToken string) (*models.User, error) {
-	token, err := GetToken(accessToken)
+func ValidateToken(d *models.DBInstance, tokenString string, isRefresh bool) (*models.User, error) {
+	token, err := GetToken(tokenString, isRefresh)
 	if err != nil {
-		return &models.User{}, err
+		return nil, err
 	}
 
 	var user models.User
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			return &models.User{}, errors.New("token is expired")
+		tokenClaims := ConvertJwtClaimsToTokenClaims(claims)
+
+		if float64(time.Now().Unix()) > float64(tokenClaims.Exp) {
+			return nil, errors.New("token is expired")
 		}
 
-		result := d.DB.Where("id = ? AND email = ?", claims["id"], claims["email"]).First(&user)
+		result := d.DB.Where("id = ? AND email = ?", tokenClaims.ID, tokenClaims.Email).First(&user)
 		if result.Error != nil || user.ID == "" {
-			return &models.User{}, errors.New("unauthorized access")
+			return nil, errors.New("unauthorized access")
 		}
 	} else {
-		return &models.User{}, errors.New("unauthorized access")
+		return nil, errors.New("unauthorized access")
 	}
 
 	return &user, nil
 }
 
 // helpers
-func GetToken(tokenString string) (token *jwt.Token, err error) {
+func GetToken(tokenString string, isRefresh bool) (token *jwt.Token, err error) {
 	return jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header)
 		}
-		return []byte(os.Getenv("CLIENT_SECRET")), nil
+
+		if isRefresh {
+			return []byte(refreshSecret), nil
+		}
+		return []byte(accessSecret), nil
 	})
 }
 
@@ -62,4 +84,14 @@ func GetTokenStringFromHeader(bearerToken string) (string, error) {
 	tokenString := strings.TrimPrefix(bearerToken, "Bearer ")
 
 	return tokenString, nil
+}
+
+func ConvertJwtClaimsToTokenClaims(claims jwt.MapClaims) *models.TokenClaims {
+	return &models.TokenClaims{
+		ID:    claims["id"].(string),
+		Email: claims["email"].(string),
+		Exp:   int64(claims["exp"].(float64)),
+		Iat:   int64(claims["iat"].(float64)),
+		Jti:   claims["jti"].(string),
+	}
 }

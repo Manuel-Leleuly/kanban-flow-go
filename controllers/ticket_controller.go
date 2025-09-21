@@ -239,7 +239,7 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			ticketId	path		string	true	"Ticket ID"
-//	@Success		200			{object}	models.TicketResponse{}
+//	@Success		200			{object}	models.TicketDeleteResponse{}
 //	@Failure		401			{object}	models.ErrorMessage{}
 //	@Failure		404			{object}	models.ErrorMessage{}
 func DeleteTicket(d *models.DBInstance, c *gin.Context) {

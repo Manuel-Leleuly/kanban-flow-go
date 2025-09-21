@@ -2,13 +2,14 @@ package middlewares
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 )
 
-var limiter = rate.NewLimiter(1, 5)
+var limiter = rate.NewLimiter(rate.Every(time.Second), 5)
 
 func RateLimitMiddleware(c *gin.Context) {
 	if !limiter.Allow() {

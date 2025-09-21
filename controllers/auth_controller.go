@@ -3,6 +3,7 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/Manuel-Leleuly/kanban-flow-go/context"
 	jwthelper "github.com/Manuel-Leleuly/kanban-flow-go/helpers/jwt"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
@@ -46,7 +47,7 @@ func Login(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
-	accessTokenString, err := jwthelper.CreateAccessToken(user)
+	accessTokenString, err := jwthelper.CreateToken(user, false)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
 			Message: "failed to generate access token",
@@ -54,10 +55,49 @@ func Login(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
-	c.Set("me", user)
+	refreshTokenString, err := jwthelper.CreateToken(user, true)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
+			Message: "failed to generate refresh token",
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, models.Token{
-		Status:      "success",
-		AccessToken: accessTokenString,
+		Status:       "success",
+		AccessToken:  accessTokenString,
+		RefreshToken: refreshTokenString,
+	})
+}
+
+func RefreshToken(c *gin.Context) {
+	user, err := context.GetUserFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
+			Message: "unauthorized access",
+		})
+		return
+	}
+
+	accessTokenString, err := jwthelper.CreateToken(*user, false)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
+			Message: "failed to generate access token",
+		})
+		return
+	}
+
+	refreshTokenString, err := jwthelper.CreateToken(*user, true)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
+			Message: "failed to generate refresh token",
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, models.Token{
+		Status:       "success",
+		AccessToken:  accessTokenString,
+		RefreshToken: refreshTokenString,
 	})
 }

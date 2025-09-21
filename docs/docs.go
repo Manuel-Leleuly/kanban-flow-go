@@ -344,7 +344,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TicketResponse"
+                            "$ref": "#/definitions/models.TicketDeleteResponse"
                         }
                     },
                     "401": {
@@ -403,6 +403,14 @@ const docTemplate = `{
                 }
             }
         },
+        "models.TicketDeleteResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.TicketResponse": {
             "type": "object",
             "properties": {
@@ -456,6 +464,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 },
                 "status": {

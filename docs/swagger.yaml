@@ -24,6 +24,11 @@ definitions:
       title:
         type: string
     type: object
+  models.TicketDeleteResponse:
+    properties:
+      message:
+        type: string
+    type: object
   models.TicketResponse:
     properties:
       assignees:
@@ -59,6 +64,8 @@ definitions:
   models.Token:
     properties:
       access_token:
+        type: string
+      refresh_token:
         type: string
       status:
         type: string
@@ -239,7 +246,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.TicketResponse'
+            $ref: '#/definitions/models.TicketDeleteResponse'
         "401":
           description: Unauthorized
           schema:

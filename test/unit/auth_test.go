@@ -99,3 +99,47 @@ func TestLoginFailed(t *testing.T) {
 
 	assert.Equal(t, "invalid email and/or password", responseBody.Message)
 }
+
+func TestRefreshTokenSuccess(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	tokenData, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodPost, "/iam/v1/token/refresh", nil, tokenData.RefreshToken)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusCreated, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.Token
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	assert.Equal(t, "success", responseBody.Status)
+}
+
+func TestRefreshTokenFailed(t *testing.T) {
+	router := routes.GetRoutes(D)
+
+	refreshToken := "wrong_refresh_token"
+	request := testhelper.GetHTTPRequest(http.MethodPost, "/iam/v1/token/refresh", nil, refreshToken)
+	recorder := httptest.NewRecorder()
+	router.ServeHTTP(recorder, request)
+
+	response := recorder.Result()
+	assert.Equal(t, http.StatusUnauthorized, response.StatusCode)
+
+	body, err := io.ReadAll(response.Body)
+	assert.Nil(t, err)
+
+	var responseBody models.ErrorMessage
+	err = json.Unmarshal(body, &responseBody)
+	assert.Nil(t, err)
+
+	assert.Equal(t, "unauthorized access", responseBody.Message)
+}

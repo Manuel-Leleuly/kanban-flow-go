@@ -337,7 +337,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.TicketResponse"
+                            "$ref": "#/definitions/models.TicketDeleteResponse"
                         }
                     },
                     "401": {
@@ -396,6 +396,14 @@
                 }
             }
         },
+        "models.TicketDeleteResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "models.TicketResponse": {
             "type": "object",
             "properties": {
@@ -449,6 +457,9 @@
             "type": "object",
             "properties": {
                 "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 },
                 "status": {

@@ -56,14 +56,20 @@ func GetTestToken(d *models.DBInstance) (*models.Token, error) {
 		return nil, err
 	}
 
-	accessTokenString, err := jwthelper.CreateAccessToken(user)
+	accessTokenString, err := jwthelper.CreateToken(user, false)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshTokenString, err := jwthelper.CreateToken(user, true)
 	if err != nil {
 		return nil, err
 	}
 
 	return &models.Token{
-		Status:      "success",
-		AccessToken: accessTokenString,
+		Status:       "success",
+		AccessToken:  accessTokenString,
+		RefreshToken: refreshTokenString,
 	}, nil
 }
 
@@ -132,13 +138,13 @@ func DeleteAllTestTickets(d *models.DBInstance) error {
 	return nil
 }
 
-func GetHTTPRequest(method string, path string, body io.Reader, accessToken string) *http.Request {
+func GetHTTPRequest(method string, path string, body io.Reader, token string) *http.Request {
 	request := httptest.NewRequest(method, path, body)
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Accept", "application/json")
 
-	if accessToken != "" {
-		request.Header.Add("Authorization", "Bearer "+accessToken)
+	if token != "" {
+		request.Header.Add("Authorization", "Bearer "+token)
 	}
 
 	return request
