@@ -192,6 +192,27 @@ paths:
       summary: Create user
       tags:
       - User
+  /iam/v1/users/me:
+    get:
+      consumes:
+      - application/json
+      description: get logged in user based on token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorMessage'
+      security:
+      - ApiKeyAuth: []
+      summary: get logged in user
+      tags:
+      - User
   /kanban/v1/tickets:
     get:
       consumes:

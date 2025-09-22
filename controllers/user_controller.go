@@ -78,7 +78,7 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 //	@Description	get logged in user based on token
 //	@Security		ApiKeyAuth
 //	@Tags			User
-//	@Router			/iam/v1/me [get]
+//	@Router			/iam/v1/users/me [get]
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	models.UserResponse{}

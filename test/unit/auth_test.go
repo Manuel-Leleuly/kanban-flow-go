@@ -126,8 +126,11 @@ func TestRefreshTokenSuccess(t *testing.T) {
 func TestRefreshTokenFailed(t *testing.T) {
 	router := routes.GetRoutes(D)
 
-	refreshToken := "wrong_refresh_token"
-	request := testhelper.GetHTTPRequest(http.MethodPost, "/iam/v1/token/refresh", nil, refreshToken)
+	// use access token instead of refresh token
+	token, err := testhelper.GetTestToken(D)
+	assert.Nil(t, err)
+
+	request := testhelper.GetHTTPRequest(http.MethodPost, "/iam/v1/token/refresh", nil, token.AccessToken)
 	recorder := httptest.NewRecorder()
 	router.ServeHTTP(recorder, request)
 

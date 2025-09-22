@@ -6,6 +6,8 @@ This is RESTful API used for [Kanban Flow - Web](https://www.github.com/Manuel-L
 
 ## How to use
 
+### Local
+
 If you want to run this project, you can do so by first installing all the dependencies required:
 
 ```
@@ -28,6 +30,14 @@ You can also use [Air](https://github.com/air-verse/air) to implement live-reloa
 air
 ```
 
+### Docker
+
+If you want to run this project using docker, you can do so by running the following command:
+
+```
+make run
+```
+
 ### Swagger
 
 Once the project is running, you can try the endpoints either by using the requests from `manual` folder (for example [tickets.http](./test/manual/ticket.http)) ot by accessing the [swagger](http://127.0.0.1:3005/apidocs/index.html)
@@ -35,8 +45,13 @@ Once the project is running, you can try the endpoints either by using the reque
 ## Development Requirements
 
 - IDE / Code Editor
-- Go (1.24.6 at the time the project was created)
-- PostgreSQL (this project uses Postgres from [Neon](https://www.neon.com))
+- With Docker
+  - Docker
+  - Docker Compose
+  - GNU Make
+- Without Docker (versions used at the time the project was created)
+  - Go (1.24.6)
+  - PostgreSQL (this project uses Postgres from [Neon](https://www.neon.com)). Why Neon you ask? Well I already made the account when I followed programming tutorials on youtube so...
 
 ## Environment Variables
 

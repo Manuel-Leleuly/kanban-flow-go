@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      target: development
+    container_name: kanban-flow-go-dev
+    restart: on-failure
+    ports:
+      - "3005:3005"
