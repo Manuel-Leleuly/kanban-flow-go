@@ -7,7 +7,6 @@ import (
 	"github.com/Manuel-Leleuly/kanban-flow-go/context"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -86,7 +85,6 @@ func CreateUser(d *models.DBInstance, c *gin.Context) {
 func GetMe(c *gin.Context) {
 	user, err := context.GetUserFromContext(c)
 	if err != nil {
-		logrus.Println("error from get me: ", err.Error())
 		c.AbortWithStatusJSON(http.StatusNotFound, models.ErrorMessage{
 			Message: "failed to get me",
 		})

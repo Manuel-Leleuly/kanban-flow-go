@@ -113,3 +113,27 @@ func RefreshToken(c *gin.Context) {
 		RefreshToken: refreshTokenString,
 	})
 }
+
+// Logout godoc
+//
+//	@Summary		logout
+//	@Description	logout
+//	@Tags			Auth
+//	@Router			/iam/v1/logout [post]
+//	@Accept			json
+//	@Produce		json
+//	@Succcess		200 {object} models.LogoutResponse{}
+//	@Failure		400	{object}	models.ErrorMessage{}
+func Logout(c *gin.Context) {
+	err := context.RemoveUserFromContext(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
+			Message: "user already logged out",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, models.LogoutResponse{
+		Message: "logout success",
+	})
+}

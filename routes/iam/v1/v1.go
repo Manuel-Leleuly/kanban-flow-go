@@ -17,6 +17,7 @@ func IAMV1Routes(router *gin.RouterGroup, d *models.DBInstance) {
 	withAccessToken := v1.Group("/", d.MakeHTTPHandleFunc(middlewares.CheckAccessToken))
 	{
 		withAccessToken.GET("/users/me", controllers.GetMe)
+		withAccessToken.POST("/logout", controllers.Logout)
 	}
 
 	withRefreshToken := v1.Group("/", d.MakeHTTPHandleFunc(middlewares.CheckRefreshToken))

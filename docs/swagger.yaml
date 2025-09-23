@@ -137,6 +137,21 @@ paths:
       summary: login
       tags:
       - Auth
+  /iam/v1/logout:
+    post:
+      consumes:
+      - application/json
+      description: logout
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorMessage'
+      summary: logout
+      tags:
+      - Auth
   /iam/v1/token/refresh:
     post:
       consumes:
@@ -218,6 +233,11 @@ paths:
       consumes:
       - application/json
       description: Get a list of tickets created by the user stored in the token
+      parameters:
+      - description: search by ticket title
+        in: query
+        name: title
+        type: string
       produces:
       - application/json
       responses:

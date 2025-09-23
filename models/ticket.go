@@ -87,7 +87,7 @@ func (tcr TicketCreateRequest) Validate() error {
 		validation.Field(
 			&tcr.Assignees,
 			validation.Each(
-				validation.In("frontend", "backend", "ui").Error("only allows \"frontend\", \"backend\", or \"ui\""),
+				validation.In("frontend", "backend", "design").Error("only allows \"frontend\", \"backend\", or \"design\""),
 			),
 			tcr.Assignees.ValidateUniqueItems(),
 		),

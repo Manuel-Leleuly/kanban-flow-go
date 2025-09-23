@@ -7,7 +7,6 @@ import (
 	jwthelper "github.com/Manuel-Leleuly/kanban-flow-go/helpers/jwt"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
@@ -18,7 +17,6 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 		cookies := c.Request.Cookies()
 		cookieMap := make(map[string]string)
 		for _, cookie := range cookies {
-			logrus.Println(cookie)
 			cookieMap[cookie.Name] = cookie.Value
 		}
 
@@ -31,8 +29,6 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 		}
 		bearerToken = "Bearer " + accessToken
 	}
-
-	logrus.Println("access token check: " + bearerToken)
 
 	accessToken, err := jwthelper.GetTokenStringFromHeader(bearerToken)
 	if err != nil {
@@ -67,7 +63,6 @@ func CheckRefreshToken(d *models.DBInstance, c *gin.Context) {
 		cookies := c.Request.Cookies()
 		cookieMap := make(map[string]string)
 		for _, cookie := range cookies {
-			logrus.Println(cookie)
 			cookieMap[cookie.Name] = cookie.Value
 		}
 

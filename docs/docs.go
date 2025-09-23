@@ -66,6 +66,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/iam/v1/logout": {
+            "post": {
+                "description": "logout",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "logout",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/iam/v1/token/refresh": {
             "post": {
                 "security": [
@@ -204,6 +227,14 @@ const docTemplate = `{
                     "Ticket"
                 ],
                 "summary": "Get a list of tickets",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "search by ticket title",
+                        "name": "title",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

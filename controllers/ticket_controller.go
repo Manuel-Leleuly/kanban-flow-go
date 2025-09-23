@@ -80,15 +80,18 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 //	@Router			/kanban/v1/tickets [get]
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	[]models.TicketResponse{}
-//	@Failure		400	{object}	models.ErrorMessage{}
-//	@Failure		401	{object}	models.ErrorMessage{}
-//	@Failure		404	{object}	models.ErrorMessage{}
+//	@Param			title	query		string	false	"search by ticket title"
+//	@Success		200		{object}	[]models.TicketResponse{}
+//	@Failure		400		{object}	models.ErrorMessage{}
+//	@Failure		401		{object}	models.ErrorMessage{}
+//	@Failure		404		{object}	models.ErrorMessage{}
 func GetTicketList(d *models.DBInstance, c *gin.Context) {
 	/*
 		only returns tickets that belong to the user registered
 		in the token
 	*/
+
+	title := c.Query("title")
 
 	user, err := context.GetUserFromContext(c)
 	if err != nil {
@@ -98,8 +101,13 @@ func GetTicketList(d *models.DBInstance, c *gin.Context) {
 		return
 	}
 
+	dbQuery := d.DB.Where("user_id = ?", user.ID)
+	if len(title) > 0 {
+		dbQuery = dbQuery.Where("LOWER(title) like LOWER(?)", "%"+title+"%")
+	}
+
 	var tickets []models.Ticket
-	if err := d.DB.Where("user_id = ?", user.ID).Find(&tickets).Error; err != nil {
+	if err := dbQuery.Find(&tickets).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, models.ErrorMessage{
 			Message: "failed to get all tickets",
 		})

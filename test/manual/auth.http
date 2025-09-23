@@ -29,3 +29,9 @@ GET http://localhost:3005/iam/v1/users/me
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer <access token>
+
+### Logout
+POST http://localhost:3005/iam/v1/logout
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer <access token>
