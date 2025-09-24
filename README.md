@@ -55,14 +55,16 @@ Once the project is running, you can try the endpoints either by using the reque
 
 ## Environment Variables
 
-| Name             | Optional |
-| ---------------- | -------- |
-| DB_USER          | no       |
-| DB_PASSWORD      | no       |
-| DB_DOMAIN        | no       |
-| DB_NAME          | no       |
-| DB_TEST_NAME     | no       |
-| CLIENT_SECRET    | no       |
-| DB_USER          | no       |
-| ENABLE_DB_LOGGER | yes      |
-| LOG_LEVEL        | yes      |
+| Name              | Optional |
+| ----------------- | -------- |
+| APP_ENV           | yes      |
+| DB_USER           | no       |
+| DB_PASSWORD       | no       |
+| DB_DOMAIN         | no       |
+| DB_NAME           | no       |
+| DB_TEST_NAME      | no       |
+| CLIENT_SECRET     | no       |
+| DB_USER           | no       |
+| ENABLE_DB_LOGGER  | yes      |
+| LOG_LEVEL         | yes      |
+| ENABLE_RATE_LIMIT | yes      |

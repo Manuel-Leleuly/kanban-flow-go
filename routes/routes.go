@@ -2,6 +2,7 @@ package routes
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/Manuel-Leleuly/kanban-flow-go/controllers"
 	"github.com/Manuel-Leleuly/kanban-flow-go/helpers"
@@ -29,7 +30,10 @@ func GetRoutes(d *models.DBInstance) *gin.Engine {
 	})
 
 	// implement rate limit and security
-	router.Use(middlewares.RateLimitMiddleware, middlewares.SecurityHeadersMiddleware)
+	if os.Getenv("ENABLE_RATE_LIMIT") == "true" {
+		router.Use(middlewares.RateLimitMiddleware)
+	}
+	router.Use(middlewares.SecurityHeadersMiddleware)
 
 	// health check
 	router.GET("/healthz", func(c *gin.Context) {

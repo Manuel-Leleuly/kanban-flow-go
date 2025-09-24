@@ -23,7 +23,7 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 		accessToken, ok := cookieMap["access_token"]
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-				Message: "unauthorized access",
+				Message: "token is expired",
 			})
 			return
 		}
@@ -33,7 +33,7 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 	accessToken, err := jwthelper.GetTokenStringFromHeader(bearerToken)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-			Message: "unauthorized access",
+			Message: "token is expired",
 		})
 		return
 	}
@@ -41,7 +41,7 @@ func CheckAccessToken(d *models.DBInstance, c *gin.Context) {
 	user, err := jwthelper.ValidateToken(d, accessToken, false)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-			Message: "unauthorized access",
+			Message: "token is expired",
 		})
 		return
 	}
@@ -66,20 +66,20 @@ func CheckRefreshToken(d *models.DBInstance, c *gin.Context) {
 			cookieMap[cookie.Name] = cookie.Value
 		}
 
-		accessToken, ok := cookieMap["refresh_token"]
+		token, ok := cookieMap["refresh_token"]
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-				Message: "unauthorized access",
+				Message: "token is expired",
 			})
 			return
 		}
-		bearerToken = "Bearer " + accessToken
+		bearerToken = "Bearer " + token
 	}
 
 	refreshToken, err := jwthelper.GetTokenStringFromHeader(bearerToken)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-			Message: "unauthorized access",
+			Message: "token is expired",
 		})
 		return
 	}
@@ -87,7 +87,7 @@ func CheckRefreshToken(d *models.DBInstance, c *gin.Context) {
 	user, err := jwthelper.ValidateToken(d, refreshToken, true)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, models.ErrorMessage{
-			Message: "unauthorized access",
+			Message: "token is expired",
 		})
 		return
 	}

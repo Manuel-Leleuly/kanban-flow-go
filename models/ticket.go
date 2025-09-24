@@ -137,13 +137,13 @@ func (tur TicketUpdateRequest) Validate() error {
 
 		/*
 			Assignees validations:
-			- only allows frontend, backend, and ui
+			- only allows frontend, backend, and design
 			- must not contain duplicates
 		*/
 		validation.Field(
 			&tur.Assignees,
 			validation.Each(
-				validation.In("frontend", "backend", "ui").Error("only allows \"frontend\", \"backend\", or \"ui\""),
+				validation.In("frontend", "backend", "design").Error("only allows \"frontend\", \"backend\", or \"design\""),
 			),
 			tur.Assignees.ValidateUniqueItems(),
 		),

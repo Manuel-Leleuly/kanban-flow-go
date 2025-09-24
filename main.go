@@ -57,12 +57,17 @@ func main() {
 		logrus.Fatal("[Error] failed to sync database due to: " + err.Error())
 	}
 
+	port := "3005"
+	if os.Getenv("APP_ENV") == "production" {
+		port = "8080"
+	}
 	server := &http.Server{
-		Addr:    ":3005",
+		Addr:    ":" + port,
 		Handler: routes.GetRoutes(db),
 	}
 
 	go func() {
+		logrus.Infof("Server starting on port %s in %s environment", port, os.Getenv("APP_ENV"))
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logrus.Fatal("[Error] failed to start Gin server due to: " + err.Error())
 		}
