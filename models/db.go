@@ -24,9 +24,14 @@ func (d *DBInstance) ConnectToDB(dbName string) error {
 		return errors.New("DB name is empty")
 	}
 
+	sslMode := os.Getenv("DB_SSL_MODE")
+	if sslMode == "" {
+		sslMode = "require"
+	}
+
 	dialect := postgres.Open(getGORMDatabaseUrl(dbName, map[string]string{
-		"ssl_mode":        "required",
-		"channel_binding": "required",
+		"ssl_mode":        sslMode,
+		"channel_binding": "require",
 	}))
 
 	gormConfig := &gorm.Config{}

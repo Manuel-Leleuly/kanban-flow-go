@@ -1,0 +1,7 @@
+FROM koyeb/docker-compose
+
+WORKDIR /app
+
+COPY . /app
+
+CMD ["docker-compose", "-f", "docker-compose.yaml", "-f", "docker-compose.prod.yaml", "up", "--remove-orphans"]

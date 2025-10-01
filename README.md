@@ -57,14 +57,15 @@ Once the project is running, you can try the endpoints either by using the reque
 
 | Name              | Optional |
 | ----------------- | -------- |
-| APP_ENV           | yes      |
+| APP_ENV           | no       |
 | DB_USER           | no       |
 | DB_PASSWORD       | no       |
 | DB_DOMAIN         | no       |
 | DB_NAME           | no       |
-| DB_TEST_NAME      | no       |
+| DB_TEST_NAME      | yes      |
 | CLIENT_SECRET     | no       |
-| DB_USER           | no       |
 | ENABLE_DB_LOGGER  | yes      |
 | LOG_LEVEL         | yes      |
 | ENABLE_RATE_LIMIT | yes      |
+| RATE_LIMIT_RPS    | yes      |
+| DB_SSL_MODE       | yes      |

@@ -2,17 +2,20 @@ package middlewares
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/Manuel-Leleuly/kanban-flow-go/initializer"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/time/rate"
 )
 
-var limiter = rate.NewLimiter(rate.Every(time.Second), 5)
-
 func RateLimitMiddleware(c *gin.Context) {
-	if !limiter.Allow() {
+	if initializer.Limiter == nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.ErrorMessage{
+			Message: "error when configuring limiter",
+		})
+	}
+
+	if !initializer.Limiter.Allow() {
 		c.AbortWithStatusJSON(http.StatusTooManyRequests, models.ErrorMessage{
 			Message: "rate limit exceeded",
 		})

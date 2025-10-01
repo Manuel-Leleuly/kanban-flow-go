@@ -7,6 +7,7 @@ import (
 	"github.com/Manuel-Leleuly/kanban-flow-go/context"
 	"github.com/Manuel-Leleuly/kanban-flow-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 // CreateTicket 	godoc
@@ -68,7 +69,11 @@ func CreateTicket(d *models.DBInstance, c *gin.Context) {
 		Ticket: newTicket.ToTicketResponse(),
 	}
 	msg, err := websocketMessage.ToJsonMarshal()
-	BroadcastMessage(msg)
+	if err != nil {
+		logrus.Error("Failed to marshal websocket message:", err)
+	} else {
+		BroadcastMessage(msg)
+	}
 }
 
 // GetTicketList 	godoc
@@ -234,7 +239,11 @@ func UpdateTicket(d *models.DBInstance, c *gin.Context) {
 		Ticket: ticket.ToTicketResponse(),
 	}
 	msg, err := websocketMessage.ToJsonMarshal()
-	BroadcastMessage(msg)
+	if err != nil {
+		logrus.Error("Failed to marshal websocket message:", err)
+	} else {
+		BroadcastMessage(msg)
+	}
 }
 
 // DeleteTicket 	godoc
@@ -288,5 +297,9 @@ func DeleteTicket(d *models.DBInstance, c *gin.Context) {
 		Ticket: models.TicketResponse{},
 	}
 	msg, err := websocketMessage.ToJsonMarshal()
-	BroadcastMessage(msg)
+	if err != nil {
+		logrus.Error("Failed to marshal websocket message:", err)
+	} else {
+		BroadcastMessage(msg)
+	}
 }

@@ -33,6 +33,4 @@ func LoggerMiddleware(c *gin.Context) {
 		"LATENCY":   latency,
 		"CLIENT_IP": c.ClientIP(),
 	}).Info("HTTP REQUEST")
-
-	c.Next()
 }

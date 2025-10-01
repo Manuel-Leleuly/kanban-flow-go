@@ -6,7 +6,7 @@ Authorization: Bearer <access token>
 {
     "title": "new ticket created by test user",
     "description": "this is the ticket created by test user",
-    "assignees": ["frontend", "backend", "ui"],
+    "assignees": ["frontend", "backend", "design"],
     "status": "todo"
 }
 
@@ -18,18 +18,18 @@ Authorization: Bearer <access token>
 
 
 ### Update ticket
-PUT http://localhost:3005/kanban/v1/tickets/cbd5f87dd33c41d39e9df5a6d6853cb4
+PUT http://localhost:3005/kanban/v1/tickets/0d3aa27533bc4b1e982398f2d0ec2bf2
 Content-Type: application/json
 Authorization: Bearer <access token>
 
 {
     "title": "Updated ticket by jane doe",
     "description": "this is the ticket created by jane doe",
-    "assignees": ["frontend", "ui"],
+    "assignees": ["frontend", "design"],
     "status": "todo"
 }
 
 ### Delete ticket
-DELETE http://localhost:3005/kanban/v1/tickets/cbd5f87dd33c41d39e9df5a6d6853cb4
+DELETE http://localhost:3005/kanban/v1/tickets/0d3aa27533bc4b1e982398f2d0ec2bf2
 Content-Type: application/json
 Authorization: Bearer <access token>

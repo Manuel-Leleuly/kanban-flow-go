@@ -11,7 +11,7 @@ import (
 type Ticket struct {
 	ID          string         `gorm:"column:id;primary_key;not null;<-create" json:"id"`
 	Title       string         `gorm:"column:title;not null;" json:"title"`
-	Description string         `gorm:"column:description;" json:"decription"`
+	Description string         `gorm:"column:description;" json:"description"`
 	Assignees   StringArray    `gorm:"column:assignees;type:jsonb" json:"assignees"`
 	Status      string         `gorm:"column:status;not null;" json:"status"`
 	CreatedAt   time.Time      `gorm:"column:created_at;autoCreateTime;not null;<-create" json:"created_at"`

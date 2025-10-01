@@ -3,17 +3,20 @@ services:
     build:
       context: .
     ports:
-      - "8080:8080"
+      - "8080:80"
     environment:
       - APP_ENV=${APP_ENV}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_DOMAIN=${DB_DOMAIN}
       - DB_NAME=${DB_NAME}
+      - DB_SSL_MODE=${DB_SSL_MODE}
       - CLIENT_SECRET=${CLIENT_SECRET}
       - ENABLE_DB_LOGGER=${ENABLE_DB_LOGGER}
       - LOG_LEVEL=${LOG_LEVEL}
       - ENABLE_RATE_LIMIT=${ENABLE_RATE_LIMIT}
+      - BASE_URL=${BASE_URL}
+      - RATE_LIMIT_RPS=${RATE_LIMIT_RPS}
     networks:
       - app-network
 

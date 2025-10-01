@@ -11,7 +11,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/main .
+
+EXPOSE 8080
 
 
 # DEV
@@ -34,12 +36,16 @@ EXPOSE 3005
 CMD ["air", "-c", ".air.toml"]
 
 # PROD
-FROM alpine:3.22 AS production
+FROM alpine:latest AS production
 
 WORKDIR /app
 
 COPY --from=builder /app/main .
 
 EXPOSE 8080
+
+# TODO: fix this
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+#     CMD wget --no-verbose --tries=1 --spider http://localhost:8080/healthz || exit 1
 
 CMD [ "./main" ]
