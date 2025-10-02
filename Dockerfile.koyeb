@@ -4,4 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
+EXPOSE 8080
+ENV PORT=8080
+
 CMD ["docker-compose", "-f", "docker-compose.yaml", "-f", "docker-compose.prod.yaml", "up", "--remove-orphans"]

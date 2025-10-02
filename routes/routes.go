@@ -36,11 +36,8 @@ func GetRoutes(d *models.DBInstance) *gin.Engine {
 	router.Use(middlewares.SecurityHeadersMiddleware)
 
 	// health check
-	router.GET("/healthz", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-		})
-	})
+	router.HEAD("/healthz", controllers.CheckServerHealth)
+	router.GET("/healthz", controllers.CheckServerHealth)
 
 	// implement websocket
 	router.GET("/ws", controllers.WebSocketHandler)

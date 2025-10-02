@@ -63,6 +63,7 @@ Once the project is running, you can try the endpoints either by using the reque
 | DB_DOMAIN         | no       |
 | DB_NAME           | no       |
 | DB_TEST_NAME      | yes      |
+| PORT              | yes      |
 | CLIENT_SECRET     | no       |
 | ENABLE_DB_LOGGER  | yes      |
 | LOG_LEVEL         | yes      |

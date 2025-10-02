@@ -11,6 +11,7 @@ services:
       - DB_DOMAIN=${DB_DOMAIN}
       - DB_NAME=${DB_NAME}
       - DB_SSL_MODE=${DB_SSL_MODE}
+      - PORT=${PORT}
       - CLIENT_SECRET=${CLIENT_SECRET}
       - ENABLE_DB_LOGGER=${ENABLE_DB_LOGGER}
       - LOG_LEVEL=${LOG_LEVEL}
